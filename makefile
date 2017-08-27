@@ -28,8 +28,9 @@ vpath %.exec coverage
 
 #default rule - will be invoked by make
 all: MedianFilter.class \
+				ParallelFilter.class \
 				Main.class \
-				Querygen.class 
+				Querygen.class \
 
 
 
@@ -38,9 +39,12 @@ doc:
 	$(NO)
 
 #Rules for executing applications
+MF: all
+		java -cp ./bin MedianFilter
 
 Main: all
-	@rm -Rf Resources/"MainResult$(NO).txt"
+	@rm -Rf Resources/"SeqMainResult$(NO).txt"
+	@rm -Rf Resources/"MainParallelResult$(NO).txt"
 	java -cp ./bin Main "sampleinputfile.txt" $(NO)
 
 

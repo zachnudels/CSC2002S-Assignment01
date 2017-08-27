@@ -3,6 +3,7 @@ import java.util.*;
 public class MedianFilter{
   int fSize;
   double[] arr;
+  double[] newArr;
   int border;
 
   public MedianFilter(double[] arr, int fSize){
@@ -19,26 +20,36 @@ public class MedianFilter{
 
   public double[] filter(){
     ArrayList<Double> checker = new ArrayList<Double>();
+    newArr = new double[arr.length];
 // for each element (barring the border elements)
-    for(int i=border;i<(arr.length-border);i++){
+    for(int i=0;i<(arr.length);i++){
+      if(i<border){
+        newArr[i]=arr[i];
+        continue;
+      }
+      else if(i>arr.length-border-1){
+        newArr[i]=arr[i];
+        continue;
+      }
 // construct an array of the numbers fSize with the i^th element as the center
       for(int j=(i-border);j<(i+border+1);j++){
         checker.add(arr[j]);
       }
 // Replace the i^th element with the median of its filter
-      arr[i]=findMedian(checker);
+  double newEl = findMedian(checker);
+      newArr[i]=newEl;
       checker.clear();
     }
-    return arr;
+    return newArr;
   }
 
-  // public static void main(String[] args){
-  //   double[] arr1 = {2.0,80.0,6.0,3.0,1.0};
-  //   MedianFilter mf = new MedianFilter(arr1, 3);
-  //   arr1 = mf.filter();
-  //   for(int i=0;i<arr1.length;i++){
-  //     System.out.println(arr1[i]);
-  //   }
-  // }
+  public static void main(String[] args){
+    double[] arr1 = {2.0,80.0,5.0,3.0,1.0};
+    MedianFilter mf = new MedianFilter(arr1, 3);
+    arr1 = mf.filter();
+    for(int i=0;i<arr1.length;i++){
+      System.out.println(arr1[i]);
+    }
+  }
 
 }
