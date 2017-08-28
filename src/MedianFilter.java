@@ -43,13 +43,5 @@ public class MedianFilter{
     return newArr;
   }
 
-  public static void main(String[] args){
-    double[] arr1 = {2.0,80.0,5.0,3.0,1.0};
-    MedianFilter mf = new MedianFilter(arr1, 3);
-    arr1 = mf.filter();
-    for(int i=0;i<arr1.length;i++){
-      System.out.println(arr1[i]);
-    }
-  }
 
 }

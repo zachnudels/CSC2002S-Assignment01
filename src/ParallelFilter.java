@@ -1,13 +1,13 @@
 import java.util.*;
 import java.util.concurrent.*;
-public class ParallelFilter extends RecursiveAction{
+public class ParallelFilter extends RecursiveTask<double[]>{
   int fSize;
   int lo;
   int hi;
   int border;
   double[] arr;
   double[] newArr;
-  public final static int SEQUENTIAL_CUTOFF = 1000000;
+  public final static int SEQUENTIAL_CUTOFF =500;
 
   public ParallelFilter(int lo, int hi, double[] arr, double[] newArr, int fSize, int border){
     this.fSize=fSize;
@@ -24,10 +24,9 @@ public class ParallelFilter extends RecursiveAction{
     return checker.get((fSize-1)/2);
   }
 
-  public void compute(){
-    if(hi-lo<SEQUENTIAL_CUTOFF){
+  public double[] compute(){
+    if(hi-lo<=SEQUENTIAL_CUTOFF){
       ArrayList<Double> checker = new ArrayList<Double>();
-      newArr = new double[arr.length];
   // for each element (barring the border elements) from lo to hi
       for(int i=lo;i<(hi);i++){
         if(i<border){
@@ -44,20 +43,25 @@ public class ParallelFilter extends RecursiveAction{
         }
   // Replace the i^th element with the median of its filter
     double newEl = findMedian(checker);
+
         newArr[i]=newEl;
+
         checker.clear();
       }
     }
     else{
-
       int mid = (hi+lo)/2;
-      System.out.println(mid);
+
       ParallelFilter left = new ParallelFilter(lo,mid,arr,newArr,fSize,border);
       ParallelFilter right = new ParallelFilter(mid,hi,arr,newArr,fSize,border);
       left.fork();
       right.compute();
       left.join();
     }
+
+
+    return newArr;
+
   }
 
 
