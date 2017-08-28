@@ -7,7 +7,7 @@ public class ParallelFilter extends RecursiveTask<double[]>{
   int border;
   double[] arr;
   double[] newArr;
-  public final static int SEQUENTIAL_CUTOFF =500;
+  public final static int SEQUENTIAL_CUTOFF =3;
 
   public ParallelFilter(int lo, int hi, double[] arr, double[] newArr, int fSize, int border){
     this.fSize=fSize;

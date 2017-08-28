@@ -93,6 +93,12 @@ public class Main{
       tick();
       parArr = parFilter(arr, fSize);
       float parTime = tock();
+      for(int g=0;g<arr.length;g++){
+        if(parArr[g]!=seqArr[g]){
+          System.out.println("ERROR!");
+          break;
+        }
+      }
       parTimes.add(parTime);
     }
 
