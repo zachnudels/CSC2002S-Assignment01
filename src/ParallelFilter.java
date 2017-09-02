@@ -7,15 +7,16 @@ public class ParallelFilter extends RecursiveTask<double[]>{
   int border;
   double[] arr;
   double[] newArr;
-  public final static int SEQUENTIAL_CUTOFF =10000;
+  public static int SEQUENTIAL_CUTOFF;
 
-  public ParallelFilter(int lo, int hi, double[] arr, double[] newArr, int fSize, int border){
+  public ParallelFilter(int lo, int hi, double[] arr, double[] newArr, int fSize, int border, int SC){
     this.fSize=fSize;
     this.border=border;
     this.hi=hi;
     this.lo=lo;
     this.arr=arr;
     this.newArr=newArr;
+    this.SEQUENTIAL_CUTOFF=SC;
   }
 
   public double findMedian(ArrayList<Double> checker){
@@ -50,9 +51,8 @@ public class ParallelFilter extends RecursiveTask<double[]>{
     }
     else{
       int mid = (hi+lo)/2;
-
-      ParallelFilter left = new ParallelFilter(lo,mid,arr,newArr,fSize,border);
-      ParallelFilter right = new ParallelFilter(mid,hi,arr,newArr,fSize,border);
+      ParallelFilter left = new ParallelFilter(lo,mid,arr,newArr,fSize,border, SEQUENTIAL_CUTOFF);
+      ParallelFilter right = new ParallelFilter(mid,hi,arr,newArr,fSize,border, SEQUENTIAL_CUTOFF);
       left.fork();
       right.compute();
       left.join();

@@ -1,9 +1,13 @@
-// import org.apache.commons.math3.*;
-// import org.apache.commons.math3.random.MersenneTwister;
+import java.util.*;
 public class Querygen{
-  // public static void main(String[] args){
-  // MersenneTwister mt = new MersenneTwister();
-  // int num = mt.next(10);
-  // System.out.println(num);
-  // }
+  double[] arr;
+
+  public Querygen(int size){
+    Random rand=new Random();
+    this.arr = new double[size];
+    for(int i=0;i<size;i++){
+      arr[i]=rand.nextDouble();
+    }
+  }
+
 }

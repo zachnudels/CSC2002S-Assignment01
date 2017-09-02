@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
-public class Main{
+public class MainExperiment{
   static long startTime = 0;
   float parTime;
 
@@ -16,39 +16,25 @@ public class Main{
 
 // Method to invoke ParallelFilter
   // Timing is done in this method since the array must already have been initialised
-  double[] parFilter(double[] arr, int fSize){
+  double[] parFilter(double[] arr, int fSize, int seqCut){
     double[] ans = new double[arr.length];
     int border = (fSize-1)/2;
     System.gc();
     tick();
-    ans = fjPool.invoke(new ParallelFilter(0,arr.length,arr,ans,fSize,border,2000));
+    ans = fjPool.invoke(new ParallelFilter(0,arr.length,arr,ans,fSize,border, seqCut));
     parTime=tock();
     return ans;
   }
   public static void main(String[] args) throws IOException{
-    Main main=new Main();
+    MainExperiment main=new MainExperiment();
 
 //Accept arguments from terminal
-    String fileName = args[0];
-    int fSize = Integer.parseInt(args[1]);
+    int fSize = Integer.parseInt(args[0]);
+    int arrSize = Integer.parseInt(args[1]);
+    int seqCut = Integer.parseInt(args[2]);
 
-// Read file and write into initialised arrayList
-    BufferedReader br = new BufferedReader(new FileReader(fileName));
-    ArrayList<String> lines = new ArrayList<String>(Integer.parseInt(br.readLine()));
-    String line = br.readLine();
-    for (int x=0;x<1000000;x++){
-      lines.add(line);
-      line=br.readLine();
-    }
-
-// Seperate lines into lineNumbers and actual data save actual data into new array
-    double[] arr = new double[lines.size()];
-    String[] tmp = new String[2];
-    for (int i=0;i<arr.length;i++){
-      tmp=lines.get(i).split("\\s");
-      arr[i] = Double.parseDouble(tmp[1]);
-    }
-
+    Querygen qn = new Querygen(arrSize);
+    double[] arr = qn.arr;
     double[] seqArr = new double[arr.length];
     double[] parArr = new double[arr.length];
     ArrayList<Float> seqTimes = new ArrayList<Float>();
@@ -77,19 +63,18 @@ public class Main{
 
 
 // Write new array to new file with line numbers
-  String writeName = "Resources/SeqMainResult"+fSize+".txt";
+  String writeName = "Resources/SeqMainResult.csv";
+  int nrOfProcessors = Runtime.getRuntime().availableProcessors();
+  String seqWrite = nrOfProcessors+" "+fSize+" "+arrSize+" "+seqCut+" "+seqAve;
     File f = new File(writeName);
     if (!f.exists())
       f.createNewFile();
     BufferedWriter bw = new BufferedWriter(new FileWriter(writeName, true));
-    int nrOfProcessors = Runtime.getRuntime().availableProcessors();
-    bw.write("Processors: "+Integer.toString(nrOfProcessors));
-    bw.newLine();
-    bw.newLine();
-    bw.write(Float.toString(seqAve));
+    bw.write(seqWrite);
       bw.newLine();
     bw.flush();
     bw.close();
+    // System.out.println(seqAve);
 
 
 /****************** PARALLEL METHOD ***************************************/
@@ -97,7 +82,7 @@ public class Main{
 
   // Create new filter object and invoke filter method on data array and time
   for(int n=0; n<iteration; n++){
-      parArr = main.parFilter(arr, fSize);
+      parArr = main.parFilter(arr, fSize, seqCut);
       // Determine if race conditions leading to incorrect results
       for(int g=0;g<arr.length;g++){
         if(parArr[g]!=seqArr[g]){
@@ -116,19 +101,18 @@ public class Main{
     parAve/=parTimes.size();
 
 
-  // Write new array to new file with line numbers
-    String parWriteName = "Resources/MainParallelResult"+fSize+".txt";
-      File f1 = new File(parWriteName);
-      if (!f1.exists())
-        f1.createNewFile();
-      BufferedWriter bw1 = new BufferedWriter(new FileWriter(parWriteName, true));
+    // Write new array to new file with line numbers
+      writeName = "Resources/ParMainResult.csv";
       nrOfProcessors = Runtime.getRuntime().availableProcessors();
-      bw1.write("Sequential Cutoff: "+ParallelFilter.SEQUENTIAL_CUTOFF);
-      bw1.newLine();
-      bw1.write("Processors: "+Integer.toString(nrOfProcessors));
-      bw1.newLine();
-        bw1.write(Float.toString(parAve));
-      bw1.flush();
-      bw1.close();
+      String parWrite = nrOfProcessors+" "+fSize+" "+arrSize+" "+seqCut+" "+parAve;
+        File f1 = new File(writeName);
+        if (!f1.exists())
+          f1.createNewFile();
+        BufferedWriter bw1 = new BufferedWriter(new FileWriter(writeName, true));
+        bw1.write(parWrite);
+          bw1.newLine();
+        bw1.flush();
+        bw1.close();
+      // System.out.println(parAve);
   }
 }

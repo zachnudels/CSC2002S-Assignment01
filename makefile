@@ -14,7 +14,9 @@ JACOCO = $(LIB)/jacoco/org.jacoco.core-0.7.5.201505241946.jar:$(LIB)/jacoco/org.
 TOOLS = $(LIB)/tools
 JAVAC = /usr/bin/javac
 JFLAGS = -g -d $(BINDIR) $(SRCDIR)/*.java -cp $(BINDIR):$(JUNIT)
-NO = 3
+FSIZE = 3
+ARRSIZE = 100000
+SC = 200
 
 vpath %.java $(SRCDIR):$(TESTDIR)
 vpath %.class $(BINDIR)
@@ -42,19 +44,20 @@ doc:
 MF: all
 		java -cp ./bin MedianFilter
 
-Main: all
-	@rm -Rf Resources/"SeqMainResult$(NO).txt"
-	@rm -Rf Resources/"MainParallelResult$(NO).txt"
-	java -cp ./bin Main "sampleinputfile.txt" $(NO)
+Experiment: all
+	java -cp ./bin MainExperiment $(FSIZE) $(ARRSIZE) $(SC)
+
+Main: clean all
+	java -cp ./bin Main "sampleinputfile.txt" $(FSIZE)
 
 
 #Self-defined
 
-Everything: clean all Main doc
+Everything: clean all Experiment
 
 
 #Cleans folders
 clean:
 	@rm -f  $(BINDIR)/*.class
 	@rm -Rf doc
-	@rm -r Resources/*.txt
+	@rm -Rf Resources/*.csv
