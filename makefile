@@ -17,6 +17,8 @@ JFLAGS = -g -d $(BINDIR) $(SRCDIR)/*.java -cp $(BINDIR):$(JUNIT)
 FSIZE = 3
 ARRSIZE = 100000
 SC = 200
+#LIM = 100000
+DATA = "sampleinputfile.txt"
 
 vpath %.java $(SRCDIR):$(TESTDIR)
 vpath %.class $(BINDIR)
@@ -31,6 +33,7 @@ vpath %.exec coverage
 #default rule - will be invoked by make
 all: MedianFilter.class \
 				ParallelFilter.class \
+				MainExperiment.class \
 				Main.class \
 				Querygen.class \
 
@@ -47,8 +50,8 @@ MF: all
 Experiment: all
 	java -cp ./bin MainExperiment $(FSIZE) $(ARRSIZE) $(SC)
 
-Main: clean all
-	java -cp ./bin Main "sampleinputfile.txt" $(FSIZE)
+Main: all
+	java -cp ./bin Main $(DATA) $(FSIZE) $(LIM)
 
 
 #Self-defined
