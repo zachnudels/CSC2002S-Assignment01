@@ -67,4 +67,4 @@ Everything: clean all
 #Cleans folders
 clean:
 	@rm -f  $(BINDIR)/*.class
-	@rm -Rf doc
+	@rm -Rf Resources/*
