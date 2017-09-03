@@ -31,21 +31,21 @@ vpath %.exec coverage
 	$(JAVAC)  $(JFLAGS)  $<
 
 #default rule - will be invoked by make
-all: MedianFilter.class \
-				ParallelFilter.class \
-				MainExperiment.class \
-				Main.class \
-				Querygen.class \
-
-
+all:	ParallelFilter.class \
+	MedianFilter.class \
+	Querygen.class \
+	Main.class \
+	Parallel2DFilter.class \
+	TwoDFilter.class \
+	Main2D.class \
+	MainExperiment.class \
 
 # Rule for generating documentation
 doc:
 	$(NO)
 
 #Rules for executing applications
-MF: all
-		java -cp ./bin MedianFilter
+
 
 Experiment: all
 	java -cp ./bin MainExperiment $(FSIZE) $(ARRSIZE) $(SC)
@@ -53,14 +53,18 @@ Experiment: all
 Main: all
 	java -cp ./bin Main $(DATA) $(FSIZE) $(LIM)
 
+Main2D: all
+	java -cp ./bin Main2D
+
+
 
 #Self-defined
 
-Everything: clean all Experiment
+Everything: clean all
+	./ExperimentBash
 
 
 #Cleans folders
 clean:
 	@rm -f  $(BINDIR)/*.class
 	@rm -Rf doc
-	@rm -Rf Resources/*.csv
